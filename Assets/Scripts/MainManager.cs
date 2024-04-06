@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -18,7 +20,24 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+    public static MainManager Instance;
+    public int HighScore;
+   
+
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        LoadScore();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,6 +85,45 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        BestScoreText.text = $"Best Score : {m_Points}";
+
+    }
+
+    void SetHighScore(int newHighest)
+    {
+        if (m_Points > newHighest)
+        {
+            newHighest = m_Points;
+            BestScoreText.text = $"Best Score : {newHighest}";
+        }
+        BestScoreText.text = $"Best Score : {m_Points}";
+    }
+
+    [System.Serializable]
+    class SaveData
+    {
+        public int HighScore;
+    }
+    public void SaveScore()
+    {
+        SaveData data = new SaveData();
+        data.HighScore = HighScore;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadScore()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            HighScore = data.HighScore;
+        }
     }
 
     public void GameOver()
