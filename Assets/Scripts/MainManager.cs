@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
 
+
 public class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
@@ -13,17 +14,16 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public Text BestScoreText;
-    public GameObject GameOverText;
+    public GameObject GameoverText;
+
+    public MenuManager MenuManager;
+    public static MainManager Instance;
     
     private bool m_Started = false;
-    private int m_Points;
-    private int m_Score;
+    public int m_Points;
+    public int m_Score;
     
     private bool m_GameOver = false;
-
-    public static MainManager Instance;
-    public int HighScore;
-   
 
 
     private void Awake()
@@ -36,16 +36,23 @@ public class MainManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        LoadScore();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void InitializeGame()
+    {
+        m_Started = false;
+        m_GameOver = false;
+        GameoverText.SetActive(false);
+        ScoreText.text = "Score: 0";
+        LoadBricks();
+    }
+
+    private void LoadBricks()
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        int[] pointCountArray = new[] { 1, 1, 2, 2, 5, 5 };
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -64,81 +71,46 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                m_Started = true;
-                float randomDirection = Random.Range(-1.0f, 1.0f);
-                Vector3 forceDir = new Vector3(randomDirection, 1, 0);
-                forceDir.Normalize();
-
-                Ball.transform.SetParent(null);
-                Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
+                InitializeGame();
+                StartGame();
             }
         }
         else if (m_GameOver)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
+                ReloadScene();
             }
         }
+    }
+
+    private void StartGame()
+    {
+        m_Started = true;
+        float randomDirection = Random.Range(-1.0f, 1.0f);
+        Vector3 forceDir = new Vector3(randomDirection, 1, 0);
+        forceDir.Normalize();
+
+        Ball.transform.SetParent(null);
+        Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
+    }
+    private void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
+        m_Score = m_Points;
         ScoreText.text = $"Score : {m_Points}";
-        BestScoreText.text = $"Best Score : {m_Score}";
-
     }
 
-    void SetHighScore()
-    {
-        int newHighest;
-
-        if (m_Points > m_Score)
-        {
-            m_Score = m_Points;
-            newHighest = m_Score;
-            BestScoreText.text = $"Best Score : {newHighest}";
-        } else
-        {
-            BestScoreText.text = $"Best Score : {m_Points}";
-        }
-    }
-
-    [System.Serializable]
-    class SaveData
-    {
-        public int HighScore;
-        
-    }
-    public void SaveScore()
-    {
-        SaveData data = new SaveData();
-        data.HighScore = m_Score;
-
-        string json = JsonUtility.ToJson(data);
-
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
-    }
-
-    public void LoadScore()
-    {
-        string path = Application.persistentDataPath + "/savefile.json";
-        if (File.Exists(path))
-        {
-            string json = File.ReadAllText(path);
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
-
-            HighScore = data.HighScore;
-        }
-    }
 
     public void GameOver()
     {
-        SetHighScore();
-        SaveScore();
         m_GameOver = true;
-        GameOverText.SetActive(true);
+        GameoverText.SetActive(true);
     }
 }

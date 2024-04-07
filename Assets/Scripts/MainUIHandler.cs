@@ -12,18 +12,15 @@ using UnityEngine.SceneManagement;
 public class MainUIHandler : MonoBehaviour
 {
 
-    public void NewHighScore(int NewHighScore)
+    private void UpdateHighScore(int newHighest)
     {
-        MainManager.Instance.HighScore = NewHighScore;
-        // add code here to handle when a color is selected
+        if (MainManager.Instance.m_Points > MainManager.Instance.m_Score)
+        {
+            MainManager.Instance.m_Score = MainManager.Instance.m_Points;
+            newHighest = MainManager.Instance.m_Score;
+            MainManager.Instance.BestScoreText.text = $"Best Score : {MainManager.Instance.m_Score}";
+        }
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     public void StartNew()
     {
         SceneManager.LoadScene(1);
