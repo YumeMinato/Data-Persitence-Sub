@@ -9,7 +9,6 @@ public class MenuManager : MonoBehaviour
 
     public static MenuManager Instance;
 
-    public int HighScore;
     private void Awake()
     {
         if (Instance != null)

@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 177912863}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Ball
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -626,9 +626,6 @@ MonoBehaviour:
   ScoreText: {fileID: 188020406}
   BestScoreText: {fileID: 2078529056}
   GameoverText: {fileID: 474497238}
-  MenuManager: {fileID: 0}
-  m_Points: 0
-  m_Score: 0
 --- !u!1 &455529321
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,6 +1268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee19acfba77e9084fb4ce7ee7ff9e3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Manager: {fileID: 450625942}
 --- !u!1 &1288645155
 GameObject:
   m_ObjectHideFlags: 0

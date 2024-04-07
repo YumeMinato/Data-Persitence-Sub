@@ -16,38 +16,15 @@ public class MainManager : MonoBehaviour
     public Text BestScoreText;
     public GameObject GameoverText;
 
-    public MenuManager MenuManager;
     public static MainManager Instance;
     
     private bool m_Started = false;
-    public int m_Points;
-    public int m_Score;
+    private int m_Points;
     
     private bool m_GameOver = false;
 
 
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-
-    private void InitializeGame()
-    {
-        m_Started = false;
-        m_GameOver = false;
-        GameoverText.SetActive(false);
-        ScoreText.text = "Score: 0";
-        LoadBricks();
-    }
-
-    private void LoadBricks()
+    private void Start()
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -71,39 +48,28 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                InitializeGame();
-                StartGame();
+                m_Started = true;
+                float randomDirection = Random.Range(-1.0f, 1.0f);
+                Vector3 forceDir = new Vector3(randomDirection, 1, 0);
+                forceDir.Normalize();
+
+                Ball.transform.SetParent(null);
+                Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
             }
         }
         else if (m_GameOver)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                ReloadScene();
+                var sceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(sceneIndex);
             }
         }
-    }
-
-    private void StartGame()
-    {
-        m_Started = true;
-        float randomDirection = Random.Range(-1.0f, 1.0f);
-        Vector3 forceDir = new Vector3(randomDirection, 1, 0);
-        forceDir.Normalize();
-
-        Ball.transform.SetParent(null);
-        Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
-    }
-    private void ReloadScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
-        m_Score = m_Points;
         ScoreText.text = $"Score : {m_Points}";
     }
 

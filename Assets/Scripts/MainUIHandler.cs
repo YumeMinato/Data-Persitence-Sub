@@ -8,27 +8,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-[DefaultExecutionOrder(1000)]
 public class MainUIHandler : MonoBehaviour
 {
-
-    private void UpdateHighScore(int newHighest)
-    {
-        if (MainManager.Instance.m_Points > MainManager.Instance.m_Score)
-        {
-            MainManager.Instance.m_Score = MainManager.Instance.m_Points;
-            newHighest = MainManager.Instance.m_Score;
-            MainManager.Instance.BestScoreText.text = $"Best Score : {MainManager.Instance.m_Score}";
-        }
-    }
     public void StartNew()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Main");
     }
 
     public void LoadMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Menu");
     }
 
     public void Exit()
