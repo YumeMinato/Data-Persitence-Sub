@@ -13,11 +13,11 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
-    public Text BestScoreText;
     public GameObject GameoverText;
 
     public static MainManager Instance;
-    
+    public BestScoreManager bestScoreManager;
+
     private bool m_Started = false;
     private int m_Points;
     
@@ -78,5 +78,6 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameoverText.SetActive(true);
+        bestScoreManager.UpdateBestScore(m_Points);
     }
 }
