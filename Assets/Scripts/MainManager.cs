@@ -78,6 +78,7 @@ public class MainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
             }
         }
     }
@@ -86,19 +87,18 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
-        m_Score = m_Points;
-        BestScoreText.text = $"Best Score : {m_Points}";
+        BestScoreText.text = $"Best Score : {m_Score}";
 
     }
 
-    void SetHighScore(int actualScore)
+    void SetHighScore()
     {
         int newHighest;
-        actualScore = m_Points;
 
         if (m_Points > m_Score)
         {
-            newHighest = m_Points;
+            m_Score = m_Points;
+            newHighest = m_Score;
             BestScoreText.text = $"Best Score : {newHighest}";
         } else
         {
@@ -110,11 +110,12 @@ public class MainManager : MonoBehaviour
     class SaveData
     {
         public int HighScore;
+        
     }
     public void SaveScore()
     {
         SaveData data = new SaveData();
-        data.HighScore = HighScore;
+        data.HighScore = m_Score;
 
         string json = JsonUtility.ToJson(data);
 
@@ -135,6 +136,8 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        SetHighScore();
+        SaveScore();
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
