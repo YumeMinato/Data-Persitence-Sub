@@ -17,6 +17,7 @@ public class MainManager : MonoBehaviour
     
     private bool m_Started = false;
     private int m_Points;
+    private int m_Score;
     
     private bool m_GameOver = false;
 
@@ -85,18 +86,24 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        m_Score = m_Points;
         BestScoreText.text = $"Best Score : {m_Points}";
 
     }
 
-    void SetHighScore(int newHighest)
+    void SetHighScore(int actualScore)
     {
-        if (m_Points > newHighest)
+        int newHighest;
+        actualScore = m_Points;
+
+        if (m_Points > m_Score)
         {
             newHighest = m_Points;
             BestScoreText.text = $"Best Score : {newHighest}";
+        } else
+        {
+            BestScoreText.text = $"Best Score : {m_Points}";
         }
-        BestScoreText.text = $"Best Score : {m_Points}";
     }
 
     [System.Serializable]
